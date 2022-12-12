@@ -1,13 +1,14 @@
 import pydobot
 from serial.tools import list_ports
-from math import atan2, sqrt, acos, asin, sin, degrees
+from math import atan2, sqrt, acos, sin, degrees, cos, radians
+from matrix import matrix
 
-#ports = [p.device for p in list_ports.comports()]
+# ports = [p.device for p in list_ports.comports()]
 
 # for i, port in enumerate(ports):
 #    print(f"{i}: {port}")
 
-#port = ports[int(input("Vælg en port: "))]
+# port = ports[int(input("Vælg en port: "))]
 
 try:
     dobot = pydobot.Dobot(port="COM7")
@@ -33,13 +34,47 @@ def moveToCord(px, py, pz, vinkel):
     theta2 = 90 - degrees(phi1) - degrees(phi2)
     theta4 = 90 + theta2 - degrees(phi3)
     theta6 = - vinkel - theta1
-    #print(f'j1:{theta1} j2:{theta2} j3:{theta4} j4:{theta6}')
+    # print(f'j1:{theta1} j2:{theta2} j3:{theta4} j4:{theta6}')
     dobot._set_ptp_cmd(round(theta1, 5), round(theta2, 5), round(theta4, 5),
                        round(theta6, 5), mode=mode, wait=True)
     (x, y, z, r, j1, j2, j3, j4) = dobot.pose()
-    #print(f'x:{x} y:{y} z:{z} r:{r} j1:{j1} j2:{j2} j3:{j3} j4:{j4}')
+    # print(f'x:{x} y:{y} z:{z} r:{r} j1:{j1} j2:{j2} j3:{j3} j4:{j4}')
     print(
         f'Diff: x: {round(px-x,2)} y: {round(py-y,2)} z: {round(pz-z,2)} r: {round(vinkel-r,2)}')
+
+
+def movetomatrix(m):
+    moveToCord(m.data[0][3], m.data[1][3], m.data[2][3], degrees(acos(m.data[0][0])))
+
+
+def get_pose(t1, t2, t4, t6):
+    t1 = radians(t1)
+    t2 = radians(t2)
+    t4 = radians(t4)
+    t6 = radians(t6)
+    data = [[-sin(t1)*sin(t6)+cos(t1)*cos(t6), -cos(t1)*sin(t6)-sin(t1)*cos(t6), 0, (90+L3*cos(t4)+L1*cos(t2-radians(90)))*cos(t1)],
+            [cos(t1)*sin(t6)+sin(t1)*cos(t6), -sin(t1)*sin(t6)+cos(t1)*cos(t6), 0, sin(t1)*(90+L3*cos(t4)+L1*cos(t2-radians(90)))],
+            [0, 0, 1, -L3*sin(t4)-L1*sin(t2-radians(90))],
+            [0, 0, 0, 1]]
+    data = [[round(data[x][y], 4) for y in range(4)] for x in range(4)]
+    postioin = matrix(4, 4, data)
+    return postioin
+
+
+def get_dobot_pos():
+    (_, _, _, _, j1, j2, j3, j4) = dobot.pose()
+    return get_pose(j1, j2, j3, j4)
+
+
+m = get_pose(0, 38.097122495070984, 26.976992679997608, -18.43494882292201)
+m.print()
+transformation = matrix.tranformation(0, 0, 10, 20, 20, 20)
+
+reslut = m * transformation
+print("")
+reslut.print()
+
+movetomatrix(reslut)
 
 
 step_count = 7
