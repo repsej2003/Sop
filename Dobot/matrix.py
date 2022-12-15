@@ -49,13 +49,13 @@ class matrix:
 
         return m
 
-    # fixed angels X-Y-Z in degeress
+    # fixed angels X-Y-Z in degeress, alpha around z, beta around y, gamma around x
     @classmethod
     def tranformation(cls, gamma, beta, alpha, x, y, z):
         gamma = radians(gamma)
         beta = radians(beta)
         alpha = radians(alpha)
-        data = [[cos(alpha)*cos(beta), cos(alpha)*sin(beta)*sin(gamma)-sin(alpha)*cos(gamma), cos(alpha)*sin(beta)*cos(gamma)+sin(alpha)*cos(gamma), x],
+        data = [[cos(alpha)*cos(beta), cos(alpha)*sin(beta)*sin(gamma)-sin(alpha)*cos(gamma), cos(alpha)*sin(beta)*cos(gamma)+sin(alpha)*sin(gamma), x],
                 [sin(alpha)*cos(beta), sin(alpha)*sin(beta)*sin(gamma)+cos(alpha)*cos(gamma), sin(alpha)*sin(beta)*cos(gamma)-cos(alpha)*sin(gamma), y],
                 [-sin(beta), cos(beta)*sin(gamma), cos(beta)*cos(gamma), z],
                 [0, 0, 0, 1]
@@ -64,7 +64,7 @@ class matrix:
 
 
 if __name__ == "__main__":
-    m1 = matrix(3, 2, [[1, 3], [1, 5]])
+    m1 = matrix(3, 2, [[1, 3], [1, 5], [2, -3]])
     m1.print()
     print("")
 

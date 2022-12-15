@@ -16,24 +16,24 @@ except:
     print("Fejl, kunne ikke forbinde til robotten")
 print("Forbindelse oprettet")
 
-L1 = 150
-L2 = 30
-L3 = 150
-L4 = 60
+L2 = 150
+L3 = 30
+L4 = 150
+L5 = 60
 mode = pydobot.enums.PTPMode.MOVJ_ANGLE
 
 
 def moveToCord(px, py, pz, vinkel):
     theta1 = atan2(py, px)
-    x = sqrt(px*px+py*py)-L2-L4
-    h = sqrt(pz*pz+x*x)
-    phi1 = atan2(pz, x)
-    phi2 = acos((h*h+L1*L1-L3*L3)/(2*h*L1))
-    phi3 = acos((L3*L3+L1*L1-h*h)/(2*L1*L3))
+    L6 = sqrt(px*px+py*py)-L3-L5
+    L7 = sqrt(pz*pz+L6*L6)
+    phi1 = atan2(pz, L6)
+    phi2 = acos((L7*L7+L2*L2-L4*L4)/(2*L7*L2))
+    phi3 = acos((L4*L4+L2*L2-L7*L7)/(2*L2*L4))
     theta1 = degrees(theta1)
     theta2 = 90 - degrees(phi1) - degrees(phi2)
     theta4 = 90 + theta2 - degrees(phi3)
-    theta6 = - vinkel - theta1
+    theta6 = vinkel - theta1
     # print(f'j1:{theta1} j2:{theta2} j3:{theta4} j4:{theta6}')
     dobot._set_ptp_cmd(round(theta1, 5), round(theta2, 5), round(theta4, 5),
                        round(theta6, 5), mode=mode, wait=True)
@@ -52,9 +52,9 @@ def get_pose(t1, t2, t4, t6):
     t2 = radians(t2)
     t4 = radians(t4)
     t6 = radians(t6)
-    data = [[-sin(t1)*sin(t6)+cos(t1)*cos(t6), -cos(t1)*sin(t6)-sin(t1)*cos(t6), 0, (90+L3*cos(t4)+L1*cos(t2-radians(90)))*cos(t1)],
-            [cos(t1)*sin(t6)+sin(t1)*cos(t6), -sin(t1)*sin(t6)+cos(t1)*cos(t6), 0, sin(t1)*(90+L3*cos(t4)+L1*cos(t2-radians(90)))],
-            [0, 0, 1, -L3*sin(t4)-L1*sin(t2-radians(90))],
+    data = [[-sin(t1)*sin(t6)+cos(t1)*cos(t6), -cos(t1)*sin(t6)-sin(t1)*cos(t6), 0, (90+L4*cos(t4)+L2*cos(t2-radians(90)))*cos(t1)],
+            [cos(t1)*sin(t6)+sin(t1)*cos(t6), -sin(t1)*sin(t6)+cos(t1)*cos(t6), 0, sin(t1)*(90+L3*cos(t4)+L2*cos(t2-radians(90)))],
+            [0, 0, 1, -L3*sin(t4)-L2*sin(t2-radians(90))],
             [0, 0, 0, 1]]
     data = [[round(data[x][y], 4) for y in range(4)] for x in range(4)]
     postioin = matrix(4, 4, data)
@@ -66,9 +66,11 @@ def get_dobot_pos():
     return get_pose(j1, j2, j3, j4)
 
 
-m = get_pose(0, 38.097122495070984, 26.976992679997608, -18.43494882292201)
+moveToCord(300, -100, 0, 50)
+
+m = get_dobot_pos()
 m.print()
-transformation = matrix.tranformation(0, 0, 10, 20, 20, 20)
+transformation = matrix.tranformation(0, 0, 0, -100, 40, 40)
 
 reslut = m * transformation
 print("")
