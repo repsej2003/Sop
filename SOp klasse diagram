@@ -215,13 +215,13 @@
         </dia:composite>
         <dia:composite type="umlattribute">
           <dia:attribute name="name">
-            <dia:string>#matrix#</dia:string>
+            <dia:string>#data#</dia:string>
           </dia:attribute>
           <dia:attribute name="type">
             <dia:string>#2d array#</dia:string>
           </dia:attribute>
           <dia:attribute name="value">
-            <dia:string>#None#</dia:string>
+            <dia:string>##</dia:string>
           </dia:attribute>
           <dia:attribute name="comment">
             <dia:string>##</dia:string>
