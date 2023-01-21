@@ -49,7 +49,7 @@ def get_pose(t1, t2, t4, t6):
     t6 = radians(t6)
     data = [[-sin(t1)*sin(t6)+cos(t1)*cos(t6), -cos(t1)*sin(t6)-sin(t1)*cos(t6), 0, (90+L4*cos(t4)+L2*cos(t2-radians(90)))*cos(t1)],
             [cos(t1)*sin(t6)+sin(t1)*cos(t6), -sin(t1)*sin(t6)+cos(t1)*cos(t6), 0, sin(t1)*(90+L3*cos(t4)+L2*cos(t2-radians(90)))],
-            [0, 0, 1, -L3*sin(t4)-L2*sin(t2-radians(90))],
+            [0, 0, 1, -L4*sin(t4)-L2*sin(t2-radians(90))],
             [0, 0, 0, 1]]
     data = [[round(data[x][y], 4) for y in range(4)] for x in range(4)]
     postioin = matrix(4, 4, data)
@@ -62,17 +62,22 @@ def get_dobot_pos():
 
 
 moveToCord(300, -100, 0, 50)
-
+# input()
 m = get_dobot_pos()
 m.print()
-transformation = matrix.tranformation(0, 0, 0, -100, 40, 40)
-
+transformation = matrix.tranformation(0, 0, 0, -100, 0, 0)
+print("")
+transformation.print()
+print("")
 reslut = m * transformation
 print("")
 reslut.print()
 
 movetomatrix(reslut)
+m = get_dobot_pos()
+m.print()
 
+# input()
 
 step_count = 7
 p1 = (170, 150, 110)
